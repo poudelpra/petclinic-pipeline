@@ -14,6 +14,13 @@ pipeline {
                 }
 
             }
+        
+            stage(Deploy to stagning) {
+                steps{
+                    build job: deploy-to-stagning
+                }
+                
+            }
         }
 }
 
