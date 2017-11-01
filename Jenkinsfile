@@ -15,9 +15,9 @@ pipeline {
 
             }
         
-            stage(Deploy to stagning) {
+            stage('Deploy to stagning') {
                 steps{
-                    build job: deploy-to-stagning
+                    build job: 'Deploy-to-stagning'
                 }
                 
             }
