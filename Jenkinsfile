@@ -1,22 +1,18 @@
 
 pipeline {
-agent any
+    agent any
+        stages {
+            stage('Build') {
+                steps {
+                    sh 'mvn clean package'
+                }
+                post {
+                    success {
+                            echo " Now Archieving"
+                            archiveArtifacts: '**/target/*.war'
+                    }
+                }
 
-stages {
-    stage('Init-Test') {
-        steps {
-            echo "Initializing the repo and testing the code"
+            }
         }
-    }
-    stage('Build') {
-        steps {
-            echo " This step is concerned on building the package"
-        }
-    }
-    stage('Deploy') {
-        steps {
-            echo "This stage is concerned on Deploying our arifacts"
-        }
-}
-}
 }
