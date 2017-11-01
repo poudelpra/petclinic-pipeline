@@ -13,7 +13,7 @@ stages {
             echo " This step is concerned on building the package"
         }
     }
-    stage('Deploy')
+    stage('Deploy') {
         steps {
             echo "This stage is concerned on Deploying our arifacts"
         }
