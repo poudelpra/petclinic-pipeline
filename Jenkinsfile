@@ -1,43 +1,41 @@
-
-
 pipeline {
     agent any
-
-    
-
-    triggers {
-         pollSCM('* * * * *')
-     }
-
-stages{
-        stage('Build'){
-            steps {
-                sh 'mvn clean package'
-            }
-            post {
-                success {
-                    echo 'Now Archiving...'
-                    archiveArtifacts artifacts: '**/target/*.war'
+        stages {
+            stage('Build'){
+                steps {
+                    sh 'mvn clean package'
+                }
+                post{
+                        success {
+                            echo "Archiving Artifacts .. . . . . ..."
+                            archiveArtifacts artifacts:'**/target/*.war'
+                        }
                 }
             }
-        }
+            stage ('Deploy to stagning'){
+                steps {
+                    build job:'pipe-deploy-stag'
+            }
+                }
+            stage ('Deploy to production'){
+                steps {
+                    timeout(time:5, unit: 'DAYS') {
+                        input message: 'Approve PRODUCTION Deployment?'
 
-        stage ('Deployments'){
-            parallel{
-                stage ('Deploy to Staging'){
-                    steps {
-                        sh " **/target/*.war root@${params.tomcat-dev}:/opt/tomcat-stag/webapps"
+                    }
+                    build job:'pipe-deploy-prod'
+                    }
+                post {
+                    success {
+                        echo " Code Deployed to production"
+                    
+                    }
+                    failure {
+                        echo "Deployment Failed"
                     }
                 }
-
-                stage ("Deploy to Production"){
-                    steps {
-                        sh " **/target/*.war root@${params.tomcat-prod}:/opt/tomcat-prod/webapps"
-                    }
                 }
-            }
         }
-    }
 }
 
 
