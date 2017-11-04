@@ -1,41 +1,40 @@
 pipeline {
     agent any
-        stages {
-            stage('Build'){
-                steps {
-                    sh 'mvn clean package'
-                }
-                post{
-                        success {
-                            echo "Archiving Artifacts .. . . . . ..."
-                            archiveArtifacts artifacts:'**/target/*.war'
-                        }
-                }
-            }
-            stage ('Deploy to stagning'){
-                steps {
-                    build job:'pipe-deploy-stag'
-            }
-                }
-            stage ('Deploy to production'){
-                steps {
-                    timeout(time:5, unit: 'DAYS') {
-                        input message: 'Approve PRODUCTION Deployment?'
+    
+    parameters {
+        string(name: 'tomcat_dev', defaultValue: '192.168.88.6', description: 'Stagning Server')
+        string(name: 'tomcat_prod', defaultValue: '192.168.88.3', description: 'Production Server')
+    }
 
-                    }
-                    build job:'pipe-deploy-prod'
-                    }
-                post {
-                    success {
-                        echo " Code Deployed to production"
-                    
-                    }
-                    failure {
-                        echo "Deployment Failed"
-                    }
-                }
-                }
+    triggers {
+        poolSCM('* * * * *')
+    }
+stages{  
+    stage ('Build') {
+        steps {
+            sh 'mvn clean package'
         }
+        post {
+            success {
+                echo "Now Archeving . . . . . . . . "
+                archiveArtifacts artifacts: '**/target/*.war'
+            }
+        }
+    }  
+    stage('Deployments'){
+        parallel{
+            stage ('Deploy to Stagning'){
+                steps{
+                    sh "scp -i **/target/*.war root@192.168.88.3:/opt/tomcat/webapps"
+                }
+            stage ('Deploy to Production') {
+                steps{
+                    sh "scp -i **/target/*.war root@192.168.88.3:/opt/tomcat/webapps"
+                }
+            }
+            }
+        }
+
+    }
 }
-
-
+}
