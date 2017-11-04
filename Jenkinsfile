@@ -7,7 +7,7 @@ pipeline {
     }
 
     triggers {
-        poolSCM('* * * * *')
+        pollSCM('* * * * *')
     }
 stages{  
     stage ('Build') {
@@ -27,6 +27,7 @@ stages{
                 steps{
                     sh "scp -i **/target/*.war root@192.168.88.3:/opt/tomcat/webapps"
                 }
+            }   
             stage ('Deploy to Production') {
                 steps{
                     sh "scp -i **/target/*.war root@192.168.88.3:/opt/tomcat/webapps"
