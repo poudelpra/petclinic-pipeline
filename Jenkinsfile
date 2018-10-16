@@ -21,7 +21,6 @@ stages{
         }
     }  
     stage('Deployments'){
-            stage ('Deploy to Production') {
                 steps{
                     sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat1/webapps/"
                     sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat2/webapps/"
@@ -31,5 +30,4 @@ stages{
                 } 
            }
      }
-}
 }
