@@ -22,11 +22,11 @@ stages{
     }  
     stage('Deployments'){
                 steps{
-                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat1/webapps/"
-                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat2/webapps/"
-                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat3/webapps/"
-		    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat4/webapps/"
-                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat5/webapps/"
+                    sh "scp -rp target/*.war root@${params.tomcat_prod}:/app/tomcat1/webapps/"
+                    sh "scp -rp target/*.war root@${params.tomcat_prod}:/app/tomcat2/webapps/"
+                    sh "scp -rp target/*.war root@${params.tomcat_prod}:/app/tomcat3/webapps/"
+		    sh "scp -rp target/*.war root@${params.tomcat_prod}:/app/tomcat4/webapps/"
+                    sh "scp -rp target/*.war root@${params.tomcat_prod}:/app/tomcat5/webapps/"
                 } 
            }
      }
