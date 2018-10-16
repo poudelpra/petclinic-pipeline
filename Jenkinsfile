@@ -2,8 +2,7 @@ pipeline {
     agent any
     
     parameters {
-        string(name: 'tomcat_dev', defaultValue: '192.168.88.6', description: 'Stagning Server')
-        string(name: 'tomcat_prod', defaultValue: '192.168.88.3', description: 'Production Server')
+        string(name: 'tomcat_prod', defaultValue: '192.168.88.9', description: 'Production Server')
     }
 
     triggers {
@@ -22,19 +21,15 @@ stages{
         }
     }  
     stage('Deployments'){
-        parallel{
-            stage ('Deploy to Stagning'){
-                steps{
-                    sh "scp -i **/target/*.war root@${params.tomcat_dev}:/var/lib/tomcat/webapps"
-                }
-            }   
             stage ('Deploy to Production') {
                 steps{
-                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/var/lib/tomcat/webapps"
-                }
-            }
-            }
-        }
-
-    }
+                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat1/webapps/"
+                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat2/webapps/"
+                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat3/webapps/"
+		    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat4/webapps/"
+                    sh "scp -i **/target/*.war root@${params.tomcat_prod}:/app/tomcat5/webapps/"
+                } 
+           }
+     }
+}
 }
