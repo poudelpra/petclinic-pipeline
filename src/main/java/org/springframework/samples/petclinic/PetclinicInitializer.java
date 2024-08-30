@@ -29,83 +29,85 @@ import org.springframework.web.servlet.support.AbstractDispatcherServletInitiali
 import javax.servlet.*;
 import java.util.EnumSet;
 
-
 /**
- * In Servlet 3.0+ environments, this class replaces the traditional {@code web.xml}-based approach in order to configure the
- * {@link ServletContext} programmatically.
+ * In Servlet 3.0+ environments, this class replaces the traditional {@code web.xml}-based
+ * approach in order to configure the {@link ServletContext} programmatically.
  * <p/>
  * Create the Spring "<strong>root</strong>" application context.<br/>
- * Register a {@link DispatcherServlet} and a {@link DandelionServlet} in the servlet context.<br/>
- * For both servlets, register a {@link CharacterEncodingFilter}, a {@link DandelionFilter} an a {@link DatatablesFilter}.
+ * Register a {@link DispatcherServlet} and a {@link DandelionServlet} in the servlet
+ * context.<br/>
+ * For both servlets, register a {@link CharacterEncodingFilter}, a
+ * {@link DandelionFilter} an a {@link DatatablesFilter}.
  * <p/>
  *
  * @author Antoine Rey
  */
 public class PetclinicInitializer extends AbstractDispatcherServletInitializer {
 
-    /**
-     * Spring profile used to choose the persistence layer implementation.
-     * <p/>
-     * When using Spring jpa, use: jpa
-     * When using Spring JDBC, use: jdbc
-     * When using Spring Data JPA, use: spring-data-jpa
-     */
-    private static final String SPRING_PROFILE = "jpa";
+	/**
+	 * Spring profile used to choose the persistence layer implementation.
+	 * <p/>
+	 * When using Spring jpa, use: jpa When using Spring JDBC, use: jdbc When using Spring
+	 * Data JPA, use: spring-data-jpa
+	 */
+	private static final String SPRING_PROFILE = "jpa";
 
-    private static final String DANDELION_SERVLET = "dandelionServlet";
+	private static final String DANDELION_SERVLET = "dandelionServlet";
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
-        registerDandelionServlet(servletContext);
-    }
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		registerDandelionServlet(servletContext);
+	}
 
-    @Override
-    protected WebApplicationContext createRootApplicationContext() {
-        XmlWebApplicationContext rootAppContext = new XmlWebApplicationContext();
-        rootAppContext.setConfigLocations("classpath:spring/business-config.xml", "classpath:spring/tools-config.xml");
-        rootAppContext.getEnvironment().setActiveProfiles(SPRING_PROFILE);
-        return rootAppContext;
-    }
+	@Override
+	protected WebApplicationContext createRootApplicationContext() {
+		XmlWebApplicationContext rootAppContext = new XmlWebApplicationContext();
+		rootAppContext.setConfigLocations("classpath:spring/business-config.xml", "classpath:spring/tools-config.xml");
+		rootAppContext.getEnvironment().setActiveProfiles(SPRING_PROFILE);
+		return rootAppContext;
+	}
 
+	@Override
+	protected WebApplicationContext createServletApplicationContext() {
+		XmlWebApplicationContext webAppContext = new XmlWebApplicationContext();
+		webAppContext.setConfigLocation("classpath:spring/mvc-core-config.xml");
+		return webAppContext;
+	}
 
-    @Override
-    protected WebApplicationContext createServletApplicationContext() {
-        XmlWebApplicationContext webAppContext = new XmlWebApplicationContext();
-        webAppContext.setConfigLocation("classpath:spring/mvc-core-config.xml");
-        return webAppContext;
-    }
+	@Override
+	protected String[] getServletMappings() {
+		return new String[] { "/" };
+	}
 
-    @Override
-    protected String[] getServletMappings() {
-        return new String[]{"/"};
-    }
+	@Override
+	protected Filter[] getServletFilters() {
+		// Used to provide the ability to enter Chinese characters inside the Owner Form
+		CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter("UTF-8", true);
 
-    @Override
-    protected Filter[] getServletFilters() {
-        // Used to provide the ability to enter Chinese characters inside the Owner Form
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter("UTF-8", true);
+		// Dandelion filter definition and mapping -->
+		DandelionFilter dandelionFilter = new DandelionFilter();
 
-        // Dandelion filter definition and mapping -->
-        DandelionFilter dandelionFilter = new DandelionFilter();
+		// Dandelion-Datatables filter, used for basic export -->
+		DatatablesFilter datatablesFilter = new DatatablesFilter();
 
-        // Dandelion-Datatables filter, used for basic export -->
-        DatatablesFilter datatablesFilter = new DatatablesFilter();
+		return new Filter[] { characterEncodingFilter, dandelionFilter, datatablesFilter };
+	}
 
-        return new Filter[]{characterEncodingFilter, dandelionFilter, datatablesFilter};
-    }
+	@Override
+	protected FilterRegistration.Dynamic registerServletFilter(ServletContext servletContext, Filter filter) {
+		FilterRegistration.Dynamic registration = super.registerServletFilter(servletContext, filter);
+		registration.addMappingForServletNames(
+				EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false,
+				DANDELION_SERVLET);
+		return registration;
+	}
 
-    @Override
-    protected FilterRegistration.Dynamic registerServletFilter(ServletContext servletContext, Filter filter) {
-        FilterRegistration.Dynamic registration = super.registerServletFilter(servletContext, filter);
-        registration.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, DANDELION_SERVLET);
-        return registration;
-    }
+	private void registerDandelionServlet(ServletContext servletContext) {
+		DandelionServlet dandelionServlet = new DandelionServlet();
+		ServletRegistration.Dynamic registration = servletContext.addServlet(DANDELION_SERVLET, dandelionServlet);
+		registration.setLoadOnStartup(2);
+		registration.addMapping("/dandelion-assets/*");
+	}
 
-    private void registerDandelionServlet(ServletContext servletContext) {
-        DandelionServlet dandelionServlet = new DandelionServlet();
-        ServletRegistration.Dynamic registration = servletContext.addServlet(DANDELION_SERVLET, dandelionServlet);
-        registration.setLoadOnStartup(2);
-        registration.addMapping("/dandelion-assets/*");
-    }
 }

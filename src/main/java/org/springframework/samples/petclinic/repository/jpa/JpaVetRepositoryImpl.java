@@ -37,15 +37,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JpaVetRepositoryImpl implements VetRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+	@PersistenceContext
+	private EntityManager em;
 
-
-    @Override
-    @Cacheable(value = "vets")
-    @SuppressWarnings("unchecked")
-    public Collection<Vet> findAll() {
-        return this.em.createQuery("SELECT distinct vet FROM Vet vet left join fetch vet.specialties ORDER BY vet.lastName, vet.firstName").getResultList();
-    }
+	@Override
+	@Cacheable(value = "vets")
+	@SuppressWarnings("unchecked")
+	public Collection<Vet> findAll() {
+		return this.em.createQuery(
+				"SELECT distinct vet FROM Vet vet left join fetch vet.specialties ORDER BY vet.lastName, vet.firstName")
+			.getResultList();
+	}
 
 }

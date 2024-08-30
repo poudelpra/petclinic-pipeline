@@ -21,44 +21,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test class for the {@link VetController}
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:spring/business-config.xml", "classpath:spring/tools-config.xml", "classpath:spring/mvc-core-config.xml"})
+@ContextConfiguration({ "classpath:spring/business-config.xml", "classpath:spring/tools-config.xml",
+		"classpath:spring/mvc-core-config.xml" })
 @WebAppConfiguration
 @ActiveProfiles("spring-data-jpa")
 public class VetControllerTests {
 
-    @Autowired
-    private VetController vetController;
+	@Autowired
+	private VetController vetController;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(vetController).build();
-    }
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.standaloneSetup(vetController).build();
+	}
 
-    @Test
-    public void testShowVetListHtml() throws Exception {
-        mockMvc.perform(get("/vets.html"))
-            .andExpect(status().isOk())
-            .andExpect(model().attributeExists("vets"))
-            .andExpect(view().name("vets/vetList"));
-    }
+	@Test
+	public void testShowVetListHtml() throws Exception {
+		mockMvc.perform(get("/vets.html"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("vets"))
+			.andExpect(view().name("vets/vetList"));
+	}
 
-    @Test
-    public void testShowResourcesVetList() throws Exception {
-        ResultActions actions = mockMvc.perform(get("/vets.json").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
-        actions.andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.vetList[0].id").value(1));
-    }
+	@Test
+	public void testShowResourcesVetList() throws Exception {
+		ResultActions actions = mockMvc.perform(get("/vets.json").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+		actions.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andExpect(jsonPath("$.vetList[0].id").value(1));
+	}
 
-    @Test
-    public void testShowVetListXml() throws Exception {
-        mockMvc.perform(get("/vets.xml").accept(MediaType.APPLICATION_XML))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_XML_VALUE))
-            .andExpect(content().node(hasXPath("/vets/vetList[id=1]/id")));
-    }
+	@Test
+	public void testShowVetListXml() throws Exception {
+		mockMvc.perform(get("/vets.xml").accept(MediaType.APPLICATION_XML))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_XML_VALUE))
+			.andExpect(content().node(hasXPath("/vets/vetList[id=1]/id")));
+	}
 
 }
-

@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.jdbc;
 
-
 import org.joda.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.samples.petclinic.model.Visit;
@@ -25,18 +24,19 @@ import java.sql.SQLException;
 import java.util.Date;
 
 /**
- * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the corresponding properties
- * of the {@link Visit} class.
+ * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the
+ * corresponding properties of the {@link Visit} class.
  */
 class JdbcVisitRowMapper implements RowMapper<Visit> {
 
-    @Override
-    public Visit mapRow(ResultSet rs, int row) throws SQLException {
-        Visit visit = new Visit();
-        visit.setId(rs.getInt("visit_id"));
-        Date visitDate = rs.getDate("visit_date");
-        visit.setDate(new LocalDate(visitDate));
-        visit.setDescription(rs.getString("description"));
-        return visit;
-    }
+	@Override
+	public Visit mapRow(ResultSet rs, int row) throws SQLException {
+		Visit visit = new Visit();
+		visit.setId(rs.getInt("visit_id"));
+		Date visitDate = rs.getDate("visit_date");
+		visit.setDate(new LocalDate(visitDate));
+		visit.setDescription(rs.getString("description"));
+		return visit;
+	}
+
 }

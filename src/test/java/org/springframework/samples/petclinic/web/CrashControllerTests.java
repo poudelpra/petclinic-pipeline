@@ -21,33 +21,34 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
  * @author Colin But
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:spring/business-config.xml", "classpath:spring/tools-config.xml", "classpath:spring/mvc-core-config.xml"})
+@ContextConfiguration({ "classpath:spring/business-config.xml", "classpath:spring/tools-config.xml",
+		"classpath:spring/mvc-core-config.xml" })
 @WebAppConfiguration
 @ActiveProfiles("spring-data-jpa")
 public class CrashControllerTests {
 
-    @Autowired
-    private CrashController crashController;
+	@Autowired
+	private CrashController crashController;
 
-    @Autowired
-    private SimpleMappingExceptionResolver simpleMappingExceptionResolver;
+	@Autowired
+	private SimpleMappingExceptionResolver simpleMappingExceptionResolver;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-            .standaloneSetup(crashController)
-            .setHandlerExceptionResolvers(simpleMappingExceptionResolver)
-            .build();
-    }
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.standaloneSetup(crashController)
+			.setHandlerExceptionResolvers(simpleMappingExceptionResolver)
+			.build();
+	}
 
-    @Test
-    public void testTriggerException() throws Exception {
-        mockMvc.perform(get("/oups"))
-            .andExpect(view().name("exception"))
-            .andExpect(model().attributeExists("exception"))
-            .andExpect(forwardedUrl("exception"))
-            .andExpect(status().isOk());
-    }
+	@Test
+	public void testTriggerException() throws Exception {
+		mockMvc.perform(get("/oups"))
+			.andExpect(view().name("exception"))
+			.andExpect(model().attributeExists("exception"))
+			.andExpect(forwardedUrl("exception"))
+			.andExpect(status().isOk());
+	}
+
 }

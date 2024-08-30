@@ -24,20 +24,21 @@ import org.joda.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
- * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the corresponding properties
- * of the {@link JdbcPet} class.
+ * {@link RowMapper} implementation mapping data from a {@link ResultSet} to the
+ * corresponding properties of the {@link JdbcPet} class.
  */
 class JdbcPetRowMapper implements RowMapper<JdbcPet> {
 
-    @Override
-    public JdbcPet mapRow(ResultSet rs, int rownum) throws SQLException {
-        JdbcPet pet = new JdbcPet();
-        pet.setId(rs.getInt("pets.id"));
-        pet.setName(rs.getString("name"));
-        Date birthDate = rs.getDate("birth_date");
-        pet.setBirthDate(new LocalDate(birthDate));
-        pet.setTypeId(rs.getInt("type_id"));
-        pet.setOwnerId(rs.getInt("owner_id"));
-        return pet;
-    }
+	@Override
+	public JdbcPet mapRow(ResultSet rs, int rownum) throws SQLException {
+		JdbcPet pet = new JdbcPet();
+		pet.setId(rs.getInt("pets.id"));
+		pet.setName(rs.getString("name"));
+		Date birthDate = rs.getDate("birth_date");
+		pet.setBirthDate(new LocalDate(birthDate));
+		pet.setTypeId(rs.getInt("type_id"));
+		pet.setOwnerId(rs.getInt("owner_id"));
+		return pet;
+	}
+
 }
