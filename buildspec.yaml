@@ -20,5 +20,5 @@ phases:
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
-      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
+      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:${CODEBUILD_BUILD_NUMBER}
       - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
