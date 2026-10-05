@@ -7,6 +7,7 @@ env:
 phases:
   pre_build:
     commands:
+     - ./mvnw install
      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
 
   build:
