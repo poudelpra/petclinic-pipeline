@@ -8,7 +8,7 @@ phases:
   pre_build:
     commands:
       - echo "Getting ECR token from Parameter Store..."
-      - ECR_TOKEN=$(aws ssm get-parameter --name "ECR_TOKEN" --with-decryption --query 'Parameter.Value' --output text)
+      - echo $ECR_TOKEN
       - echo "$ECR_TOKEN" | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-1.amazonaws.com
       - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - ECR_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com 
