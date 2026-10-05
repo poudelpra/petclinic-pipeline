@@ -3,6 +3,8 @@ version: 0.2
 env: 
   variables:
     AWS_DEFAULT_REGION: "us-east-1"
+    AWS_ACCOUNT_NO="633160612874"
+    DOCKER_REGISTRY="dkr.ecr.us-east-2.amazonaws.com"
     ECR_REPOSITORY: "tomcat-petclinic"
 phases:
   pre_build:
@@ -13,13 +15,13 @@ phases:
     commands:
       - echo "Build started on $(date)"
       - echo "Building Docker image..."
-      - docker build -t 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:${CODEBUILD_BUILD_NUMBER} .
-      - docker tag 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:${CODEBUILD_BUILD_NUMBER} 33160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
+      - docker build -t ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER} .
+      - docker tag ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER} ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:latest
 
   
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
-      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:${CODEBUILD_BUILD_NUMBER}
-      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
+      - docker push ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER}
+      - docker push ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:latest
