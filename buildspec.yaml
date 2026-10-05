@@ -7,7 +7,7 @@ env:
 phases:
   pre_build:
     commands:
-     - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
+     - ls -lrtha
 
   build:
     commands:
@@ -20,5 +20,6 @@ phases:
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
       - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:${CODEBUILD_BUILD_NUMBER}
       - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
