@@ -7,27 +7,18 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "Getting ECR token from Parameter Store..."
-      - echo $ECR_TOKEN
-      - echo "$ECR_TOKEN" | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-1.amazonaws.com
-      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - ECR_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com 
-      - REPOSITORY_URI=${ECR_URI}/${ECR_REPOSITORY}
-      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
-      - echo "Repository- ${REPOSITORY_URI}"
-      - echo "Image tag - ${IMAGE_TAG}"
-
+     - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
 
   build:
     commands:
       - echo "Build started on $(date)"
       - echo "Building Docker image..."
-      - docker build -t ${REPOSITORY_URI}:${IMAGE_TAG} .
-      - docker tag ${REPOSITORY_URI}:${IMAGE_TAG} ${REPOSITORY_URI}:latest
+      - docker build -t 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
+      - docker tag 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
 
   
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
-      - docker push ${REPOSITORY_URI}:${IMAGE_TAG}
-      - docker push ${REPOSITORY_URI}:latest   
+      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
+      - docker push 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
