@@ -16,12 +16,9 @@ phases:
       - echo "Build started on $(date)"
       - echo "Building Docker image..."
       - docker build -t ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER} .
-      - docker tag ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER} ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:latest
 
-  
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}
       - docker push ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:${CODEBUILD_BUILD_NUMBER}
-      - docker push ${AWS_ACCOUNT_NO}.${DOCKER_REGISTRY}/${ECR_REPOSITORY}:latest
