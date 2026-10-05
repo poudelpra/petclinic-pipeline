@@ -13,7 +13,7 @@ phases:
     commands:
       - echo "Build started on $(date)"
       - echo "Building Docker image..."
-      - docker build -t 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic
+      - docker build -t 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic .
       - docker tag 633160612874.dkr.ecr.us-east-2.amazonaws.com/tomcat-petclinic:latest
 
   
