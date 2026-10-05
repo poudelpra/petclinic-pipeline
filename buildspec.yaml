@@ -12,8 +12,8 @@ phases:
       - REPOSITORY_URI=${ECR_URI}/${ECR_REPOSITORY}
       - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_URI}
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
-      - echo "Repository: ${REPOSITORY_URI}"
-      - echo "Image tag: ${IMAGE_TAG}"
+      - echo "Repository- ${REPOSITORY_URI}"
+      - echo "Image tag - ${IMAGE_TAG}"
 
 
   build:
