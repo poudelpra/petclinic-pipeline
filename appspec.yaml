@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /tmp
+hooks:
+   ApplicationStop:
+     - location: scripts/tomcat-stop.sh
+       timeout: 300
+       runas: root
+
+  ApplicationInstall:
+      - location: scripts/tomcat-install.sh
+        timeout: 300
+        runas: root
+
+ApplicationStart:
+      - location: scripts/tomcat-start.sh
+        timeout: 300
+        runas: root
+    
